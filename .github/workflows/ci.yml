@@ -1,10 +1,90 @@
 name: ci
-on: [push, pull_request]
+on:
+  push:
+  pull_request:
+
 jobs:
   test:
-    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
-      - run: brew install shellcheck
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - run: go vet ./...
+      - name: test
+        shell: bash
+        run: |
+          if [ "$RUNNER_OS" = Windows ]; then go test ./...; else go test -race ./...; fi
+      - name: smoke test the binary
+        shell: bash
+        run: |
+          go build -o dwf-bin ./cmd/dwf
+          ./dwf-bin version
+          ./dwf-bin help
+          ./dwf-bin status
+      - name: install.ps1 parses
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: '[scriptblock]::Create((Get-Content install.ps1 -Raw)) | Out-Null'
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
       - run: make lint
-      - run: make test
+
+  # Prepares this runner as a tunnel server with the real setup-server.sh
+  # (over SSH, as a sudo user, exactly like `dwf setup --admin`), then checks
+  # the tunnel and the lockdown of the tunnel user.
+  linux-server:
+    runs-on: ubuntu-latest
+    env:
+      DWF_CONFIG_DIR: ${{ github.workspace }}/.e2e/config
+      DWF_STATE_DIR: ${{ github.workspace }}/.e2e/state
+      DWF_LOG_FILE: ${{ github.workspace }}/.e2e/dwf.log
+      DWF_PROBE_URL: https://example.com
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - run: go build -o dwf-bin ./cmd/dwf
+      - name: start sshd
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq openssh-server
+          sudo systemctl start ssh || sudo service ssh start
+      - name: give this runner an admin key
+        run: |
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          ssh-keygen -q -t ed25519 -N "" -f ~/.ssh/id_ed25519
+          cat ~/.ssh/id_ed25519.pub >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys
+          chmod go-w ~
+      - name: dwf setup prepares the server and tests the tunnel
+        run: |
+          ./dwf-bin setup --yes --mode tunnel --host 127.0.0.1 --admin "$USER" | tee setup.out
+          grep -q "created user dwf" setup.out
+          grep -q "tunnel works" setup.out
+      - name: setup is idempotent
+        run: ./dwf-bin setup --yes --mode tunnel --host 127.0.0.1 --admin "$USER" | grep "tunnel works"
+      - name: tunnel user is locked down
+        run: |
+          key=~/.ssh/discord-warp-fix_ed25519
+          o="-i $key -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=no"
+          if ssh $o -n dwf@127.0.0.1 'echo SHELL-WORKED' | grep -q SHELL-WORKED; then echo "shell access must be refused"; exit 1; fi
+          if timeout 10 ssh $o -n -N -o ExitOnForwardFailure=yes -R 127.0.0.1:2299:127.0.0.1:22 dwf@127.0.0.1; then echo "remote forwarding must be refused"; exit 1; fi
+          ssh $o -n -N -D 127.0.0.1:18080 dwf@127.0.0.1 & sleep 3
+          curl -fsS -x socks5h://127.0.0.1:18080 https://example.com -o /dev/null
+          echo "lockdown OK"
+      - name: tunnel service runs
+        run: |
+          ./dwf-bin tunnel & sleep 5
+          curl -fsS -x socks5h://127.0.0.1:1080 https://example.com -o /dev/null
+          ./dwf-bin status
