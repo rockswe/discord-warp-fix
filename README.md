@@ -74,6 +74,12 @@ Artık Roblox ve Wattpad açılmalı. Discord da açılır. Ama Discord'da
 
 #### 2. Adım: Discord'da "Mesajlar yüklenemedi" hatası alıyorsanız
 
+Hata Discord'da şöyle görünür. Discord'unuz Türkçe ise aynı uyarı Türkçe çıkar:
+
+<p align="center">
+  <img src="public/example.webp" alt="Discord'da Messages Failed To Load hatası ve Try Again düğmesi" width="600">
+</p>
+
 **Neden oluyor?** WARP herkese ayrı bir IP adresi vermiyor. İstanbul'dan
 bağlanan herkes aynı iki ortak çıkış adresini paylaşıyor. Discord her IP
 adresinden gelen istek sayısını sınırlıyor. Binlerce kişi aynı adresten
@@ -346,6 +352,10 @@ Where `dwf` has been tested:
 | Windows | Builds and passes unit tests in CI, but **hasn't been run on a real Windows PC yet**. If something breaks, please [open an issue](../../issues) or send a PR. See [CONTRIBUTING.md](CONTRIBUTING.md) |
 
 ### Why this happens
+
+<p align="center">
+  <img src="public/example.webp" alt="Discord showing Messages Failed To Load with a Try Again button" width="600">
+</p>
 
 When Discord is blocked where you live, WARP (the free 1.1.1.1 app) gets you
 past the block. But WARP doesn't give you your own IP address. Everyone
