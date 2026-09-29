@@ -5,7 +5,7 @@ package main
 import (
 	"os"
 
-	"github.com/rockswe/discord-warp-fix/internal/cli"
+	"github.com/rockswe/erisim/internal/cli"
 )
 
 // version is set at build time with -ldflags "-X main.version=...".

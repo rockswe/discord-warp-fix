@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"strconv"
 
-	"github.com/rockswe/discord-warp-fix/internal/paths"
+	"github.com/rockswe/erisim/internal/paths"
 )
 
 const label = "com.discord-warp-fix"

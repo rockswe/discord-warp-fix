@@ -1,157 +1,85 @@
-# discord-warp-fix
+# erisim
 
-Keeps Discord working when you reach it through Cloudflare WARP and keep
-getting **"Messages failed to load"**. One small program for macOS, Linux and
-Windows.
+Türkiye'de erişim engeli olan **Discord, Roblox, Wattpad** gibi uygulamaları
+kolayca kullanmak için adım adım rehber. Bilgisayar ya da programlama bilmeniz
+gerekmiyor: adımları sırayla izleyin.
 
-**Türkçe kurulum rehberi:** [aşağıda](#türkçe). İngilizce kısmı okumanıza gerek yok.
+**English:** [see below](#english)
 
-| Platform | Status |
-|---|---|
-| macOS | Tested end to end with WARP and the Discord app |
-| Linux | Server side tested in CI on Ubuntu. The desktop side (starting Discord, notifications) hasn't been tried on a real desktop yet |
-| Windows | Builds and passes unit tests in CI, but **hasn't been run on a real Windows PC yet**. If something breaks, please [open an issue](../../issues) or send a PR. See [CONTRIBUTING.md](CONTRIBUTING.md) |
+## Hangi cihazdasınız?
 
-## Why this happens
+- **Telefon veya tablet:** [Telefonda](#telefonda) bölümüne gidin. Tek bir uygulama kurmanız yeterli.
+- **Bilgisayar:** [Bilgisayarda](#bilgisayarda) bölümüne gidin.
 
-When Discord is blocked where you live, WARP (the free 1.1.1.1 app) gets you
-past the block. But WARP doesn't give you your own IP address. Everyone
-connected to the same Cloudflare data center leaves from a tiny pool of
-shared exit addresses. In Istanbul that pool was just two IPs in our testing.
+## Telefonda
 
-Discord limits how many requests one IP may send. Thousands of people behind
-one address blow through that limit, so Discord answers with **HTTP 429 Too
-Many Requests**, and the app shows "Messages failed to load". It "sometimes
-works randomly" because the limit is a rolling window shared with strangers.
+1. Cloudflare'in ücretsiz **1.1.1.1** uygulamasını indirin:
+   - iPhone ve iPad: [App Store](https://apps.apple.com/app/1-1-1-1-faster-internet/id1423538627)
+   - Android: [Google Play](https://play.google.com/store/apps/details?id=com.cloudflare.onedotonedotonedotone)
+2. Uygulamayı açın ve kullanım şartlarını kabul edin.
+3. Ortadaki büyük düğmeye basın. Telefon "VPN yapılandırması eklensin mi?" diye sorarsa **İzin Ver**'e dokunun.
+4. Düğmenin altında **Connected** ya da **Bağlı** yazmalı.
 
-Things that **don't** help: changing DNS, switching WARP between MASQUE and
-WireGuard for good, re-registering WARP, or IPv6. Discord has no IPv6
-addresses, and WARP shows the same shared IPv4 exit anyway.
+Bu kadar. Artık Discord, Roblox ve Wattpad açılır. Bu uygulamaları
+kullanırken 1.1.1.1'i kapatmayın.
 
-## What dwf does
+Discord'da arada bir **"Mesajlar yüklenemedi"** görürseniz sebebi aşağıda
+anlatılan hız sınırı. Bu rehberdeki program telefonda çalışmıyor. Birkaç
+dakika sonra tekrar deneyin.
 
-| Mode | Cost | What it does | Fixes it for good? |
-|---|---|---|---|
-| `reroll` | free | Watches Discord's log. On a burst of 429s it flips WARP until you land on the other shared exit, and notifies you. | No. It only helps while one exit is quieter. |
-| `tunnel` | a small server abroad | Keeps an SSH tunnel to a server you control and runs Discord through it. Discord then uses that server's IP, which nobody else shares. | **Yes** |
-| `proxy` | a proxy you already have | Same as `tunnel`, through an existing SOCKS5 or HTTP proxy. | Yes, if its IP isn't shared |
+## Bilgisayarda
 
-In `tunnel` and `proxy` modes dwf also:
+### 1. Adım: WARP'ı kurun (herkes için)
 
-- moves Discord onto the proxy when it starts on its own, at login or after an update;
-- falls back to plain WARP if the proxy is down for two minutes, and tells you when it's back;
-- reconnects the tunnel by itself when the connection drops.
+Bu adım Discord, Roblox ve Wattpad'deki erişim engelini kaldırır. Çoğu kişi
+için gereken tek adım budur.
 
-The SSH client is built in, so nothing else needs to be installed. Keep WARP
-connected in every mode: it still carries your other traffic, Discord voice,
-and the connection to your server.
+#### Windows
 
-## Install
+1. https://one.one.one.one adresine gidin ve **Windows** için indirme düğmesine tıklayın.
+2. İnen dosyayı açın ve kurulumu tamamlayın. Yönetici izni isterse **Evet**'e tıklayın.
+3. Ekranın sağ altında, saatin yanında bir bulut simgesi belirir. Ona tıklayın ve açılan penceredeki düğmeyi açın. İlk açılışta kullanım şartlarını kabul edin.
+4. Pencerede **Connected** yazmalı.
 
-**macOS and Linux**, in a terminal:
+#### Mac
 
-```sh
-curl -fsSL https://raw.githubusercontent.com/rockswe/discord-warp-fix/main/install.sh | sh
-```
+1. https://one.one.one.one adresine gidin ve **macOS** için indirme düğmesine tıklayın.
+2. İnen `.pkg` dosyasını açın ve kurulumu tamamlayın. Mac şifrenizi ister.
+3. Ekranın sağ üstünde, menü çubuğunda bir bulut simgesi belirir. Ona tıklayın ve düğmeyi açın. macOS VPN yapılandırması için izin isterse **İzin Ver**'e tıklayın.
+4. Pencerede **Connected** yazmalı.
 
-**Windows**, in PowerShell:
+#### Linux
 
-```powershell
-irm https://raw.githubusercontent.com/rockswe/discord-warp-fix/main/install.ps1 | iex
-```
-
-Or download a binary from [Releases](../../releases), or build from source
-with Go 1.26+: `go build ./cmd/dwf`.
-
-Then:
+https://pkg.cloudflareclient.com adresindeki resmi talimatlarla WARP'ı
+dağıtımınıza göre kurun. Sonra terminalde şunları çalıştırın:
 
 ```sh
-dwf setup      # pick a mode
-dwf install    # run in the background, now and at every login
-dwf launch     # tunnel/proxy modes only: restart Discord through the proxy
+warp-cli registration new
+warp-cli connect
 ```
 
-### Tunnel mode: the server
+#### Çalışıyor mu?
 
-Any Linux server outside your country works, like a $4–5/month VPS from
-Hetzner or DigitalOcean, or a free-tier VM. It only relays Discord's text
-traffic, so the smallest plan is plenty. Pick Ubuntu or Debian.
+Tarayıcınızda https://www.cloudflare.com/cdn-cgi/trace adresini açın.
+Sayfada `warp=on` yazıyorsa WARP çalışıyor demektir.
 
-`dwf setup` creates an SSH key and prepares the server for you when you give
-it an admin login such as `root`. It creates a user that can **only** open
-outbound connections. That user has no shell and no terminal, and it can't
-listen on ports, so a leaked key can't be used to log in. To do it by hand,
-run [`server/setup-server.sh`](server/setup-server.sh) on the server as root
-with the public key `dwf setup` prints.
+Artık Roblox ve Wattpad açılmalı. Discord da açılır. Ama Discord'da
+**"Mesajlar yüklenemedi"** hatası alıyorsanız 2. Adım'a geçin.
 
-## Commands
+### 2. Adım: Discord'da "Mesajlar yüklenemedi" hatası alıyorsanız
 
-```
-dwf status            WARP exit IP, whether Discord uses the proxy, recent errors, service
-dwf check             test the configured mode end to end
-dwf launch            restart Discord through the proxy
-dwf launch --direct   restart Discord without the proxy
-dwf reroll            move WARP to a different exit IP right now
-dwf logs              what dwf has been doing
-dwf uninstall         stop dwf and remove it from login (--purge also deletes the config)
-```
-
-Settings live in `~/.config/discord-warp-fix/config`, or
-`%APPDATA%\discord-warp-fix\config` on Windows. Run `dwf install` again
-after editing it.
-
-| Setting | Default | Meaning |
-|---|---|---|
-| `THRESHOLD` / `WINDOW` | `5` / `120` | errors within that many seconds that count as a rate-limit burst |
-| `COOLDOWN` | `300` | seconds between automatic actions |
-| `AUTO_RELAUNCH` | `1` | move a freshly started Discord onto the proxy |
-| `FALLBACK_AFTER` | `120` | seconds of proxy failure before falling back to WARP (`0` = only notify) |
-| `DISCORD_APP` | `Discord` | or `Discord PTB` / `Discord Canary` |
-| `NOTIFY` | `1` | desktop notifications |
-
-## Limitations
-
-- **Voice isn't proxied.** Discord's voice engine ignores proxy settings, so calls go through WARP. That's fine: voice servers aren't what gets rate-limited.
-- **Restarts take a few seconds.** `dwf launch`, auto-relaunch and fallback all quit and reopen Discord. Automatic restarts only touch a Discord that started in the last three minutes, or one whose proxy is dead.
-- **`reroll` can't create new exits.** When every shared exit is overloaded, it can only tell you.
-- **SOCKS5 proxies with a username and password** aren't supported, because Discord can't use them.
-
-## How it was tested
-
-- Unit tests cover config parsing (including configs from the old Bash version), burst detection, log rotation, the watchdog's rules, the SOCKS5 server, and the SSH tunnel against an in-process SSH server: reconnects, pinned host keys, and a refusal to ever open a shell.
-- CI runs the tests on macOS, Linux and Windows. On Ubuntu it also prepares the runner as a real tunnel server with `dwf setup --admin`, and checks that the tunnel user can't get a shell or open listening ports.
-- On macOS, against real WARP and Discord: setup, launching Discord through the tunnel, auto-relaunch, falling back when the server dies, and recovering when it returns.
-
-## Uninstall
-
-```sh
-dwf launch --direct     # tunnel/proxy modes: put Discord back on plain WARP first
-dwf uninstall --purge
-rm ~/.local/bin/dwf     # Windows: Remove-Item -Recurse "$env:LOCALAPPDATA\Programs\discord-warp-fix"
-```
-
----
-
-## Türkçe
-
-Bu bölüm tek başına yeterli: İngilizce kısmı okumanıza gerek yok.
-
-### Sorun ne?
-
-Discord Türkiye'de erişime kapatıldığından beri çoğu kişi Cloudflare WARP
-(1.1.1.1 uygulaması) kullanıyor. WARP herkese ayrı bir IP adresi vermiyor.
-İstanbul'dan bağlanan herkes aynı iki ortak çıkış adresini paylaşıyor.
-
-Discord her IP adresinden gelen istek sayısını sınırlıyor. Binlerce kişi aynı
-adresten bağlandığı için bu sınır sürekli aşılıyor ve Discord istekleri
-reddediyor. Uygulamada bu **"Mesajlar yüklenemedi"** hatası olarak görünüyor.
+**Neden oluyor?** WARP herkese ayrı bir IP adresi vermiyor. İstanbul'dan
+bağlanan herkes aynı iki ortak çıkış adresini paylaşıyor. Discord her IP
+adresinden gelen istek sayısını sınırlıyor. Binlerce kişi aynı adresten
+bağlandığı için bu sınır sürekli aşılıyor ve Discord istekleri reddediyor.
 Arada bir çalışmasının sebebi de bu: sınır, o anda o adreste kaç kişi olduğuna
 göre dolup boşalıyor.
 
-DNS değiştirmek, WARP'ı kapatıp açmak, WARP protokolünü değiştirmek ya da
-WARP'ı silip yeniden kurmak sorunu kalıcı olarak çözmez.
+DNS değiştirmek, WARP'ı kapatıp açmak ya da WARP'ı silip yeniden kurmak bu
+sorunu kalıcı olarak çözmez. Bunun için bu depodaki **`dwf`** programını
+kullanın.
 
-### Hangi bilgisayarlarda çalışır?
+#### Hangi bilgisayarlarda çalışır?
 
 | Sistem | Durum |
 |---|---|
@@ -159,24 +87,19 @@ WARP'ı silip yeniden kurmak sorunu kalıcı olarak çözmez.
 | Linux | Sunucu tarafı otomatik testlerle denendi. Masaüstünde Discord'u başlatma kısmı henüz gerçek bir bilgisayarda denenmedi. |
 | Windows | Program derleniyor ve otomatik testlerden geçiyor, ama **henüz gerçek bir Windows bilgisayarda denenmedi**. Sorun yaşarsanız GitHub'da bir [issue](../../issues) açın ya da düzeltip PR gönderin. |
 
-### Hangi modu seçmeliyim?
+#### Hangi modu seçmeliyim?
 
 | Mod | Ücret | Ne yapar? | Kalıcı çözüm mü? |
 |---|---|---|---|
-| `reroll` | Ücretsiz | Discord hata vermeye başlayınca WARP'ı diğer ortak adrese geçirir ve size bildirim gönderir. | Hayır. Diğer adres de doluysa yapabileceği bir şey yok. |
-| `tunnel` | Aylık yaklaşık 4–5 $ | Discord'u yurt dışında kiraladığınız küçük bir sunucu üzerinden çalıştırır. Discord'a sadece size ait bir IP'den bağlanırsınız. | **Evet** |
+| `reroll` | Ücretsiz | Discord hata vermeye başlayınca WARP'ı diğer ortak adrese geçirir ve size bildirim gönderir. WARP'ın açık olması **şarttır**. | Hayır. Diğer adres de doluysa yapabileceği bir şey yok. |
+| `tunnel` | Aylık yaklaşık 4–5 $ | Discord'u yurt dışında kiraladığınız küçük bir sunucu üzerinden çalıştırır. Discord'a sadece size ait bir IP'den bağlanırsınız. WARP'ı açık tutmanız **önerilir**: sesli görüşmeler ve Discord güncellemeleri tünelden geçmez. | **Evet** |
 | `proxy` | Proxy'nize bağlı | Elinizde zaten bir SOCKS5 veya HTTP proxy varsa Discord'u onun üzerinden çalıştırır. | Evet, proxy'nin IP'si başkalarıyla paylaşılmıyorsa |
 
 **Önerimiz:** Önce ücretsiz `reroll` moduyla başlayın. Hatalar devam ederse
 `tunnel` moduna geçin. Mod değiştirmek için her şeyi baştan kurmanız gerekmez,
-sadece 3. adımı tekrarlarsınız.
+sadece `dwf setup` adımını tekrarlarsınız.
 
-### Gerekenler
-
-- **Cloudflare WARP** kurulu ve bağlı olmalı. Kurulu değilse https://one.one.one.one adresinden indirin. Mac'te menü çubuğundaki, Windows'ta sağ alttaki bulut simgesinde "Connected" yazmalı.
-- **Discord masaüstü uygulaması.** Tarayıcıdaki Discord ile çalışmaz.
-
-### 1. Adım: Kurun
+### Programı kurun
 
 #### Mac veya Linux
 
@@ -184,7 +107,7 @@ sadece 3. adımı tekrarlarsınız.
 2. Aşağıdaki satırı kopyalayıp Terminal'e yapıştırın ve Enter'a basın:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/rockswe/discord-warp-fix/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/rockswe/erisim/main/install.sh | sh
 ```
 
 Ekranda `installed ... dwf` yazısını görmelisiniz. Altında
@@ -198,7 +121,7 @@ bir kez yapmanız yeterli.
 2. Aşağıdaki satırı kopyalayıp yapıştırın ve Enter'a basın:
 
 ```powershell
-irm https://raw.githubusercontent.com/rockswe/discord-warp-fix/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/rockswe/erisim/main/install.ps1 | iex
 ```
 
 3. Kurulum bitince **PowerShell'i kapatıp yeniden açın.** Yoksa `dwf` komutu bulunamaz.
@@ -215,7 +138,7 @@ Bir sürüm numarası görmelisiniz. `command not found` ya da
 `is not recognized` yazıyorsa Terminal'i veya PowerShell'i kapatıp açın. Mac
 ve Linux'ta PATH uyarısındaki satırı çalıştırdığınızdan emin olun.
 
-### 2. Adım (A): Ücretsiz `reroll` modu
+### Seçenek A: Ücretsiz `reroll` modu
 
 Şunu çalıştırın:
 
@@ -247,7 +170,7 @@ Adresi hemen kendiniz değiştirmek isterseniz:
 dwf reroll
 ```
 
-### 2. Adım (B): Kalıcı çözüm, `tunnel` modu
+### Seçenek B: Kalıcı çözüm, `tunnel` modu
 
 #### Sunucu kiralayın
 
@@ -310,7 +233,7 @@ proxy adresinizi yazın, örneğin `socks5://203.0.113.7:1080`. Ardından
 `dwf install` ve `dwf launch` çalıştırın. Kullanıcı adı ve parola isteyen
 SOCKS5 proxy'ler desteklenmez.
 
-### Çalışıyor mu? Kontrol edin
+### dwf çalışıyor mu?
 
 ```sh
 dwf status
@@ -337,7 +260,7 @@ dwf logs
 | Sorun | Çözüm |
 |---|---|
 | `command not found: dwf` ya da `is not recognized` | Terminal'i veya PowerShell'i kapatıp açın. Mac ve Linux'ta PATH uyarısındaki satırı çalıştırın. |
-| `warp-cli not found` | Cloudflare WARP kurulu değil. https://one.one.one.one adresinden kurun. |
+| `warp-cli not found` | Cloudflare WARP kurulu değil. [1. Adım](#1-adım-warpı-kurun-herkes-için)'a dönün. |
 | `can't reach Cloudflare through WARP` | WARP bağlı değil. Bulut simgesinden bağlanın. |
 | `tunnel test FAILED` | Sunucu IP'si ya da şifre yanlış olabilir, veya sunucu kapalı olabilir. Sunucunun açık olduğunu kontrol edip `dwf setup`'ı tekrar çalıştırın. |
 | `warning: that's the same IP as WARP's shared exit` | Girdiğiniz sunucu yurt dışında değil ya da yanlış adres girdiniz. |
@@ -390,6 +313,146 @@ Remove-Item -Recurse "$env:LOCALAPPDATA\Programs\discord-warp-fix"
 
 Kiraladığınız sunucuyu artık kullanmayacaksanız sunucu firmasının panelinden
 silmeyi unutmayın, yoksa ücretlendirilmeye devam eder.
+
+---
+
+## English
+
+A step-by-step guide for using apps that are blocked in Turkey, such as
+Discord, Roblox and Wattpad, plus `dwf`, a small program for macOS, Linux and
+Windows that fixes Discord's **"Messages failed to load"** behind Cloudflare
+WARP.
+
+**Just want Roblox or Wattpad?** Install Cloudflare WARP
+(https://one.one.one.one, or the "1.1.1.1" app on phones) and turn it on.
+That's all. The rest of this section is about Discord, which needs more
+because of the rate limit explained below.
+
+Where `dwf` has been tested:
+
+| Platform | Status |
+|---|---|
+| macOS | Tested end to end with WARP and the Discord app |
+| Linux | Server side tested in CI on Ubuntu. The desktop side (starting Discord, notifications) hasn't been tried on a real desktop yet |
+| Windows | Builds and passes unit tests in CI, but **hasn't been run on a real Windows PC yet**. If something breaks, please [open an issue](../../issues) or send a PR. See [CONTRIBUTING.md](CONTRIBUTING.md) |
+
+### Why this happens
+
+When Discord is blocked where you live, WARP (the free 1.1.1.1 app) gets you
+past the block. But WARP doesn't give you your own IP address. Everyone
+connected to the same Cloudflare data center leaves from a tiny pool of
+shared exit addresses. In Istanbul that pool was just two IPs in our testing.
+
+Discord limits how many requests one IP may send. Thousands of people behind
+one address blow through that limit, so Discord answers with **HTTP 429 Too
+Many Requests**, and the app shows "Messages failed to load". It "sometimes
+works randomly" because the limit is a rolling window shared with strangers.
+
+Things that **don't** help: changing DNS, switching WARP between MASQUE and
+WireGuard for good, re-registering WARP, or IPv6. Discord has no IPv6
+addresses, and WARP shows the same shared IPv4 exit anyway.
+
+### What dwf does
+
+| Mode | Cost | What it does | Fixes it for good? |
+|---|---|---|---|
+| `reroll` | free | Watches Discord's log. On a burst of 429s it flips WARP until you land on the other shared exit, and notifies you. | No. It only helps while one exit is quieter. |
+| `tunnel` | a small server abroad | Keeps an SSH tunnel to a server you control and runs Discord through it. Discord then uses that server's IP, which nobody else shares. | **Yes** |
+| `proxy` | a proxy you already have | Same as `tunnel`, through an existing SOCKS5 or HTTP proxy. | Yes, if its IP isn't shared |
+
+In `tunnel` and `proxy` modes dwf also:
+
+- moves Discord onto the proxy when it starts on its own, at login or after an update;
+- falls back to plain WARP if the proxy is down for two minutes, and tells you when it's back;
+- reconnects the tunnel by itself when the connection drops.
+
+The SSH client is built in, so nothing else needs to be installed. Keep WARP
+connected in every mode: it still carries your other traffic, Discord voice,
+and the connection to your server.
+
+### Install
+
+**macOS and Linux**, in a terminal:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/rockswe/erisim/main/install.sh | sh
+```
+
+**Windows**, in PowerShell:
+
+```powershell
+irm https://raw.githubusercontent.com/rockswe/erisim/main/install.ps1 | iex
+```
+
+Or download a binary from [Releases](../../releases), or build from source
+with Go 1.26+: `go build ./cmd/dwf`.
+
+Then:
+
+```sh
+dwf setup      # pick a mode
+dwf install    # run in the background, now and at every login
+dwf launch     # tunnel/proxy modes only: restart Discord through the proxy
+```
+
+#### Tunnel mode: the server
+
+Any Linux server outside your country works, like a $4–5/month VPS from
+Hetzner or DigitalOcean, or a free-tier VM. It only relays Discord's text
+traffic, so the smallest plan is plenty. Pick Ubuntu or Debian.
+
+`dwf setup` creates an SSH key and prepares the server for you when you give
+it an admin login such as `root`. It creates a user that can **only** open
+outbound connections. That user has no shell and no terminal, and it can't
+listen on ports, so a leaked key can't be used to log in. To do it by hand,
+run [`server/setup-server.sh`](server/setup-server.sh) on the server as root
+with the public key `dwf setup` prints.
+
+### Commands
+
+```
+dwf status            WARP exit IP, whether Discord uses the proxy, recent errors, service
+dwf check             test the configured mode end to end
+dwf launch            restart Discord through the proxy
+dwf launch --direct   restart Discord without the proxy
+dwf reroll            move WARP to a different exit IP right now
+dwf logs              what dwf has been doing
+dwf uninstall         stop dwf and remove it from login (--purge also deletes the config)
+```
+
+Settings live in `~/.config/discord-warp-fix/config`, or
+`%APPDATA%\discord-warp-fix\config` on Windows. Run `dwf install` again
+after editing it.
+
+| Setting | Default | Meaning |
+|---|---|---|
+| `THRESHOLD` / `WINDOW` | `5` / `120` | errors within that many seconds that count as a rate-limit burst |
+| `COOLDOWN` | `300` | seconds between automatic actions |
+| `AUTO_RELAUNCH` | `1` | move a freshly started Discord onto the proxy |
+| `FALLBACK_AFTER` | `120` | seconds of proxy failure before falling back to WARP (`0` = only notify) |
+| `DISCORD_APP` | `Discord` | or `Discord PTB` / `Discord Canary` |
+| `NOTIFY` | `1` | desktop notifications |
+
+### Limitations
+
+- **Voice isn't proxied.** Discord's voice engine ignores proxy settings, so calls go through WARP. That's fine: voice servers aren't what gets rate-limited.
+- **Restarts take a few seconds.** `dwf launch`, auto-relaunch and fallback all quit and reopen Discord. Automatic restarts only touch a Discord that started in the last three minutes, or one whose proxy is dead.
+- **`reroll` can't create new exits.** When every shared exit is overloaded, it can only tell you.
+- **SOCKS5 proxies with a username and password** aren't supported, because Discord can't use them.
+
+### How it was tested
+
+- Unit tests cover config parsing (including configs from the old Bash version), burst detection, log rotation, the watchdog's rules, the SOCKS5 server, and the SSH tunnel against an in-process SSH server: reconnects, pinned host keys, and a refusal to ever open a shell.
+- CI runs the tests on macOS, Linux and Windows. On Ubuntu it also prepares the runner as a real tunnel server with `dwf setup --admin`, and checks that the tunnel user can't get a shell or open listening ports.
+- On macOS, against real WARP and Discord: setup, launching Discord through the tunnel, auto-relaunch, falling back when the server dies, and recovering when it returns.
+
+### Uninstall
+
+```sh
+dwf launch --direct     # tunnel/proxy modes: put Discord back on plain WARP first
+dwf uninstall --purge
+rm ~/.local/bin/dwf     # Windows: Remove-Item -Recurse "$env:LOCALAPPDATA\Programs\discord-warp-fix"
+```
 
 ## License
 

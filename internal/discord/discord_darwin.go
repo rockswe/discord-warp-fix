@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/rockswe/discord-warp-fix/internal/paths"
+	"github.com/rockswe/erisim/internal/paths"
 	"github.com/shirou/gopsutil/v4/process"
 )
 

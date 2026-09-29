@@ -9,8 +9,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/rockswe/discord-warp-fix/internal/burst"
-	"github.com/rockswe/discord-warp-fix/internal/config"
+	"github.com/rockswe/erisim/internal/burst"
+	"github.com/rockswe/erisim/internal/config"
 )
 
 // Discord is what the watchdog needs to know about the running app.

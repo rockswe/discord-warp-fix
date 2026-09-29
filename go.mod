@@ -1,4 +1,4 @@
-module github.com/rockswe/discord-warp-fix
+module github.com/rockswe/erisim
 
 go 1.26.0
 

@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/rockswe/discord-warp-fix/internal/config"
+	"github.com/rockswe/erisim/internal/config"
 )
 
 type fakeEnv struct {
