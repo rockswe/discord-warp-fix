@@ -25,7 +25,7 @@ mkdir -p "$BIN_DIR"
 tmp=$(mktemp)
 trap 'rm -f "$tmp"' EXIT
 
-here=$(cd "$(dirname "$0")" 2>/dev/null && pwd || true)
+here=$(cd "$(dirname "$0")" 2>/dev/null && pwd) || here=""
 if [ -n "$here" ] && grep -qs 'module github.com/rockswe/discord-warp-fix' "$here/go.mod" && command -v go >/dev/null 2>&1; then
   version=$(git -C "$here" describe --tags --always --dirty 2>/dev/null || echo dev)
   echo "building dwf $version from source..."

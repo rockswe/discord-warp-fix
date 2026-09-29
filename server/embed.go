@@ -2,9 +2,15 @@
 // server without the repository around.
 package server
 
-import _ "embed"
+import (
+	"bytes"
+	_ "embed"
+)
 
-// Script prepares a Linux server as a private Discord exit.
-//
 //go:embed setup-server.sh
-var Script []byte
+var raw []byte
+
+// Script prepares a Linux server as a private Discord exit. Carriage
+// returns are stripped: a Windows checkout may have converted the file to
+// CRLF, and bash on the server would choke on them.
+var Script = bytes.ReplaceAll(raw, []byte("\r\n"), []byte("\n"))

@@ -35,6 +35,12 @@ func TestMatchBlockIsValidSSHDConfig(t *testing.T) {
 	}
 }
 
+func TestScriptHasNoCarriageReturns(t *testing.T) {
+	if strings.Contains(string(Script), "\r") {
+		t.Fatal("the script sent to the server must use LF line endings")
+	}
+}
+
 func TestScriptLocksDownTheUser(t *testing.T) {
 	for _, want := range []string{"restrict,port-forwarding", "AllowTcpForwarding local", "PermitTTY no", "GatewayPorts no", `-t -f "$SSHD_CONFIG"`} {
 		if !strings.Contains(string(Script), want) {
