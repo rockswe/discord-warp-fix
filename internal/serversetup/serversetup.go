@@ -16,9 +16,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/rockswe/erisim/internal/paths"
-	"github.com/rockswe/erisim/internal/tunnel"
-	"github.com/rockswe/erisim/server"
+	"github.com/rockswe/discord-warp-fix/internal/paths"
+	"github.com/rockswe/discord-warp-fix/internal/tunnel"
+	"github.com/rockswe/discord-warp-fix/server"
 	"golang.org/x/crypto/ssh"
 	"golang.org/x/crypto/ssh/agent"
 )

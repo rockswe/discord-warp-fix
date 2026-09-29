@@ -13,7 +13,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/rockswe/erisim/internal/paths"
+	"github.com/rockswe/discord-warp-fix/internal/paths"
 )
 
 // Modes.

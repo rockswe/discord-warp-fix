@@ -4,15 +4,15 @@ import (
 	"context"
 	"time"
 
-	"github.com/rockswe/erisim/internal/config"
-	"github.com/rockswe/erisim/internal/discord"
-	"github.com/rockswe/erisim/internal/logtail"
-	"github.com/rockswe/erisim/internal/logx"
-	"github.com/rockswe/erisim/internal/netcheck"
-	"github.com/rockswe/erisim/internal/notify"
-	"github.com/rockswe/erisim/internal/tunnel"
-	"github.com/rockswe/erisim/internal/warp"
-	"github.com/rockswe/erisim/internal/watchdog"
+	"github.com/rockswe/discord-warp-fix/internal/config"
+	"github.com/rockswe/discord-warp-fix/internal/discord"
+	"github.com/rockswe/discord-warp-fix/internal/logtail"
+	"github.com/rockswe/discord-warp-fix/internal/logx"
+	"github.com/rockswe/discord-warp-fix/internal/netcheck"
+	"github.com/rockswe/discord-warp-fix/internal/notify"
+	"github.com/rockswe/discord-warp-fix/internal/tunnel"
+	"github.com/rockswe/discord-warp-fix/internal/warp"
+	"github.com/rockswe/discord-warp-fix/internal/watchdog"
 )
 
 // realEnv connects the watchdog to the actual machine.

@@ -1,12 +1,12 @@
 #!/bin/sh
 # Installs dwf on macOS or Linux into ~/.local/bin.
 #
-#   curl -fsSL https://raw.githubusercontent.com/rockswe/erisim/main/install.sh | sh
+#   curl -fsSL https://raw.githubusercontent.com/rockswe/discord-warp-fix/main/install.sh | sh
 #
 # Run from a clone with Go installed and it builds from source instead.
 set -eu
 
-REPO="rockswe/erisim"
+REPO="rockswe/discord-warp-fix"
 BIN_DIR="${DWF_BIN_DIR:-$HOME/.local/bin}"
 
 os=$(uname -s | tr '[:upper:]' '[:lower:]')
@@ -26,7 +26,7 @@ tmp=$(mktemp)
 trap 'rm -f "$tmp"' EXIT
 
 here=$(cd "$(dirname "$0")" 2>/dev/null && pwd) || here=""
-if [ -n "$here" ] && grep -qs 'module github.com/rockswe/erisim' "$here/go.mod" && command -v go >/dev/null 2>&1; then
+if [ -n "$here" ] && grep -qs 'module github.com/rockswe/discord-warp-fix' "$here/go.mod" && command -v go >/dev/null 2>&1; then
   version=$(git -C "$here" describe --tags --always --dirty 2>/dev/null || echo dev)
   echo "building dwf $version from source..."
   (cd "$here" && go build -ldflags "-s -w -X main.version=$version" -o "$tmp" ./cmd/dwf)

@@ -1,17 +1,23 @@
-# erisim
+# discord-warp-fix
+
+<p align="center">
+  <a href="#türkçe"><img alt="Türkçe" src="https://img.shields.io/badge/T%C3%BCrk%C3%A7e-E30A17?style=for-the-badge"></a>
+  &nbsp;
+  <a href="#english"><img alt="English" src="https://img.shields.io/badge/English-012169?style=for-the-badge"></a>
+</p>
+
+## Türkçe
 
 Türkiye'de erişim engeli olan **Discord, Roblox, Wattpad** gibi uygulamaları
 kolayca kullanmak için adım adım rehber. Bilgisayar ya da programlama bilmeniz
 gerekmiyor: adımları sırayla izleyin.
 
-**English:** [see below](#english)
-
-## Hangi cihazdasınız?
+### Hangi cihazdasınız?
 
 - **Telefon veya tablet:** [Telefonda](#telefonda) bölümüne gidin. Tek bir uygulama kurmanız yeterli.
 - **Bilgisayar:** [Bilgisayarda](#bilgisayarda) bölümüne gidin.
 
-## Telefonda
+### Telefonda
 
 1. Cloudflare'in ücretsiz **1.1.1.1** uygulamasını indirin:
    - iPhone ve iPad: [App Store](https://apps.apple.com/app/1-1-1-1-faster-internet/id1423538627)
@@ -27,28 +33,28 @@ Discord'da arada bir **"Mesajlar yüklenemedi"** görürseniz sebebi aşağıda
 anlatılan hız sınırı. Bu rehberdeki program telefonda çalışmıyor. Birkaç
 dakika sonra tekrar deneyin.
 
-## Bilgisayarda
+### Bilgisayarda
 
-### 1. Adım: WARP'ı kurun (herkes için)
+#### 1. Adım: WARP'ı kurun (herkes için)
 
 Bu adım Discord, Roblox ve Wattpad'deki erişim engelini kaldırır. Çoğu kişi
 için gereken tek adım budur.
 
-#### Windows
+##### Windows
 
 1. https://one.one.one.one adresine gidin ve **Windows** için indirme düğmesine tıklayın.
 2. İnen dosyayı açın ve kurulumu tamamlayın. Yönetici izni isterse **Evet**'e tıklayın.
 3. Ekranın sağ altında, saatin yanında bir bulut simgesi belirir. Ona tıklayın ve açılan penceredeki düğmeyi açın. İlk açılışta kullanım şartlarını kabul edin.
 4. Pencerede **Connected** yazmalı.
 
-#### Mac
+##### Mac
 
 1. https://one.one.one.one adresine gidin ve **macOS** için indirme düğmesine tıklayın.
 2. İnen `.pkg` dosyasını açın ve kurulumu tamamlayın. Mac şifrenizi ister.
 3. Ekranın sağ üstünde, menü çubuğunda bir bulut simgesi belirir. Ona tıklayın ve düğmeyi açın. macOS VPN yapılandırması için izin isterse **İzin Ver**'e tıklayın.
 4. Pencerede **Connected** yazmalı.
 
-#### Linux
+##### Linux
 
 https://pkg.cloudflareclient.com adresindeki resmi talimatlarla WARP'ı
 dağıtımınıza göre kurun. Sonra terminalde şunları çalıştırın:
@@ -58,7 +64,7 @@ warp-cli registration new
 warp-cli connect
 ```
 
-#### Çalışıyor mu?
+##### Çalışıyor mu?
 
 Tarayıcınızda https://www.cloudflare.com/cdn-cgi/trace adresini açın.
 Sayfada `warp=on` yazıyorsa WARP çalışıyor demektir.
@@ -66,7 +72,7 @@ Sayfada `warp=on` yazıyorsa WARP çalışıyor demektir.
 Artık Roblox ve Wattpad açılmalı. Discord da açılır. Ama Discord'da
 **"Mesajlar yüklenemedi"** hatası alıyorsanız 2. Adım'a geçin.
 
-### 2. Adım: Discord'da "Mesajlar yüklenemedi" hatası alıyorsanız
+#### 2. Adım: Discord'da "Mesajlar yüklenemedi" hatası alıyorsanız
 
 **Neden oluyor?** WARP herkese ayrı bir IP adresi vermiyor. İstanbul'dan
 bağlanan herkes aynı iki ortak çıkış adresini paylaşıyor. Discord her IP
@@ -75,11 +81,14 @@ bağlandığı için bu sınır sürekli aşılıyor ve Discord istekleri redded
 Arada bir çalışmasının sebebi de bu: sınır, o anda o adreste kaç kişi olduğuna
 göre dolup boşalıyor.
 
+Sorun sadece Türkiye'de değil: başka ülkelerde WARP kullananlar da aynı
+hatayı alıyor ([örnek](https://www.reddit.com/r/CloudFlare/comments/1nsnb4e/discord_messages_failed_to_load_in_warp/)).
+
 DNS değiştirmek, WARP'ı kapatıp açmak ya da WARP'ı silip yeniden kurmak bu
 sorunu kalıcı olarak çözmez. Bunun için bu depodaki **`dwf`** programını
 kullanın.
 
-#### Hangi bilgisayarlarda çalışır?
+##### Hangi bilgisayarlarda çalışır?
 
 | Sistem | Durum |
 |---|---|
@@ -87,7 +96,7 @@ kullanın.
 | Linux | Sunucu tarafı otomatik testlerle denendi. Masaüstünde Discord'u başlatma kısmı henüz gerçek bir bilgisayarda denenmedi. |
 | Windows | Program derleniyor ve otomatik testlerden geçiyor, ama **henüz gerçek bir Windows bilgisayarda denenmedi**. Sorun yaşarsanız GitHub'da bir [issue](../../issues) açın ya da düzeltip PR gönderin. |
 
-#### Hangi modu seçmeliyim?
+##### Hangi modu seçmeliyim?
 
 | Mod | Ücret | Ne yapar? | Kalıcı çözüm mü? |
 |---|---|---|---|
@@ -99,15 +108,15 @@ kullanın.
 `tunnel` moduna geçin. Mod değiştirmek için her şeyi baştan kurmanız gerekmez,
 sadece `dwf setup` adımını tekrarlarsınız.
 
-### Programı kurun
+#### Programı kurun
 
-#### Mac veya Linux
+##### Mac veya Linux
 
 1. **Terminal**'i açın. Mac'te `Cmd + Boşluk` tuşlarına basın, `Terminal` yazın ve Enter'a basın.
 2. Aşağıdaki satırı kopyalayıp Terminal'e yapıştırın ve Enter'a basın:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/rockswe/erisim/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/rockswe/discord-warp-fix/main/install.sh | sh
 ```
 
 Ekranda `installed ... dwf` yazısını görmelisiniz. Altında
@@ -115,18 +124,18 @@ Ekranda `installed ... dwf` yazısını görmelisiniz. Altında
 gösterilen `echo ...` ile başlayan satırı kopyalayıp çalıştırın. Bunu sadece
 bir kez yapmanız yeterli.
 
-#### Windows
+##### Windows
 
 1. Başlat menüsüne `PowerShell` yazın ve **Windows PowerShell**'i açın. Yönetici olarak açmanıza gerek yok.
 2. Aşağıdaki satırı kopyalayıp yapıştırın ve Enter'a basın:
 
 ```powershell
-irm https://raw.githubusercontent.com/rockswe/erisim/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/rockswe/discord-warp-fix/main/install.ps1 | iex
 ```
 
 3. Kurulum bitince **PowerShell'i kapatıp yeniden açın.** Yoksa `dwf` komutu bulunamaz.
 
-#### Kurulumu kontrol edin
+##### Kurulumu kontrol edin
 
 Her sistemde şunu çalıştırın:
 
@@ -138,7 +147,7 @@ Bir sürüm numarası görmelisiniz. `command not found` ya da
 `is not recognized` yazıyorsa Terminal'i veya PowerShell'i kapatıp açın. Mac
 ve Linux'ta PATH uyarısındaki satırı çalıştırdığınızdan emin olun.
 
-### Seçenek A: Ücretsiz `reroll` modu
+#### Seçenek A: Ücretsiz `reroll` modu
 
 Şunu çalıştırın:
 
@@ -170,16 +179,16 @@ Adresi hemen kendiniz değiştirmek isterseniz:
 dwf reroll
 ```
 
-### Seçenek B: Kalıcı çözüm, `tunnel` modu
+#### Seçenek B: Kalıcı çözüm, `tunnel` modu
 
-#### Sunucu kiralayın
+##### Sunucu kiralayın
 
 1. Yurt dışında (örneğin Almanya veya Hollanda'da) en küçük ve en ucuz Linux sunucuyu kiralayın. Hetzner, DigitalOcean gibi firmaların aylık 4–5 dolarlık paketleri yeterli. Sunucu yalnızca Discord'un yazı trafiğini taşıyacak.
 2. İşletim sistemi olarak **Ubuntu 24.04** seçin.
 3. Giriş yöntemi sorulursa **şifre (password)** seçin ve bir root şifresi belirleyin.
 4. Sunucu hazır olunca size verilen **IP adresini** (örneğin `203.0.113.7`) ve **root şifresini** bir yere not edin.
 
-#### Programı sunucuya bağlayın
+##### Programı sunucuya bağlayın
 
 Şunu çalıştırın:
 
@@ -226,14 +235,14 @@ dwf launch
 **WARP'ı her zaman açık tutun.** Tünel modunda da Discord'un bazı bağlantıları
 ve diğer tüm trafiğiniz WARP üzerinden geçer.
 
-#### Elinizde zaten bir proxy varsa: `proxy` modu
+##### Elinizde zaten bir proxy varsa: `proxy` modu
 
 `dwf setup` çalıştırın, `Mode` sorusuna `proxy` yazın. `Proxy URL` sorusuna
 proxy adresinizi yazın, örneğin `socks5://203.0.113.7:1080`. Ardından
 `dwf install` ve `dwf launch` çalıştırın. Kullanıcı adı ve parola isteyen
 SOCKS5 proxy'ler desteklenmez.
 
-### dwf çalışıyor mu?
+#### dwf çalışıyor mu?
 
 ```sh
 dwf status
@@ -255,7 +264,7 @@ Programın arka planda neler yaptığını görmek için:
 dwf logs
 ```
 
-### Sık karşılaşılan sorunlar
+#### Sık karşılaşılan sorunlar
 
 | Sorun | Çözüm |
 |---|---|
@@ -269,7 +278,7 @@ dwf logs
 | Windows Defender programı engelledi | İmzasız programlarda bazen yanlış alarm veriyor. Programı [Releases](../../releases) sayfasındaki `checksums.txt` ile karşılaştırabilirsiniz. |
 | Discord'u tünelsiz açmak istiyorum | `dwf launch --direct` |
 
-### Ayarlar (isteğe bağlı)
+#### Ayarlar (isteğe bağlı)
 
 Ayarlar Mac ve Linux'ta `~/.config/discord-warp-fix/config`, Windows'ta
 `%APPDATA%\discord-warp-fix\config` dosyasındadır. Değiştirmeniz gerekmez, ama
@@ -284,7 +293,7 @@ isterseniz düzenleyip ardından `dwf install` çalıştırın.
 | `DISCORD_APP` | `Discord` | PTB veya Canary kullanıyorsanız `"Discord PTB"` ya da `"Discord Canary"`. |
 | `NOTIFY` | `1` | Bildirimleri kapatmak için `0`. |
 
-### Kaldırma
+#### Kaldırma
 
 `tunnel` ya da `proxy` modunu kullandıysanız önce Discord'u tünelsiz açın.
 Yoksa kaldırmadan sonra Discord kapanmış tünele bağlı kalır:
@@ -345,7 +354,9 @@ shared exit addresses. In Istanbul that pool was just two IPs in our testing.
 
 Discord limits how many requests one IP may send. Thousands of people behind
 one address blow through that limit, so Discord answers with **HTTP 429 Too
-Many Requests**, and the app shows "Messages failed to load". It "sometimes
+Many Requests**, and the app shows "Messages failed to load". This isn't
+limited to Turkey: WARP users in other countries report the same error
+([example](https://www.reddit.com/r/CloudFlare/comments/1nsnb4e/discord_messages_failed_to_load_in_warp/)). It "sometimes
 works randomly" because the limit is a rolling window shared with strangers.
 
 Things that **don't** help: changing DNS, switching WARP between MASQUE and
@@ -375,13 +386,13 @@ and the connection to your server.
 **macOS and Linux**, in a terminal:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/rockswe/erisim/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/rockswe/discord-warp-fix/main/install.sh | sh
 ```
 
 **Windows**, in PowerShell:
 
 ```powershell
-irm https://raw.githubusercontent.com/rockswe/erisim/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/rockswe/discord-warp-fix/main/install.ps1 | iex
 ```
 
 Or download a binary from [Releases](../../releases), or build from source

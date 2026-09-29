@@ -1,10 +1,10 @@
 # Installs dwf on Windows into %LOCALAPPDATA%\Programs\discord-warp-fix.
 #
-#   irm https://raw.githubusercontent.com/rockswe/erisim/main/install.ps1 | iex
+#   irm https://raw.githubusercontent.com/rockswe/discord-warp-fix/main/install.ps1 | iex
 #
 # UNTESTED on real Windows so far. See CONTRIBUTING.md.
 $ErrorActionPreference = 'Stop'
-$repo = 'rockswe/erisim'
+$repo = 'rockswe/discord-warp-fix'
 $arch = if ($env:PROCESSOR_ARCHITECTURE -eq 'ARM64') { 'arm64' } else { 'amd64' }
 $dir = Join-Path $env:LOCALAPPDATA 'Programs\discord-warp-fix'
 $exe = Join-Path $dir 'dwf.exe'
