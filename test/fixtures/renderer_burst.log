@@ -1,0 +1,7 @@
+[2026-09-19 17:23:36.189] [info]  [MessageActionCreators] Fetching messages for 100000000000000001 between undefined and undefined. jump={"jumpType":"ANIMATED"}
+[2026-09-19 17:23:36.374] [info]  [MessageActionCreators] Failed to fetch messages for 100000000000000001
+[2026-09-19 17:23:36.393] [error] [Spellchecker] sh is not a valid locale.
+[2026-09-19 17:23:37.385] [error] Uncaught (in promise) HTTPResponseError: GET /applications/public [429]
+[2026-09-19 17:23:38.520] [error] Uncaught (in promise) HTTPResponseError: GET /users/@me/mfa/webauthn/credentials [429]
+[2026-09-19 17:23:38.606] [info]  [MessageActionCreators] Failed to fetch messages for 100000000000000002
+[2026-09-19 17:24:35.768] [error] Uncaught (in promise) HTTPResponseError: GET /users/xxx/profile [429]
